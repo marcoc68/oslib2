@@ -7,9 +7,8 @@ class WindowAsset(window.Window):
     Herda de Window e adiciona métodos para gerenciar ativos
     e buscar dados diretamente do terminal MetaTrader 5.
     """
-
-    def __init__(self, symbol: str, timeframe: int = mt5.TIMEFRAME_M1, capacity: int = 10):
-        super().__init__(capacity)  # Inicializa o construtor da classe base
+    def __init__(self, symbol: str, timeframe: int = mt5.TIMEFRAME_M1, capacity: int = 10, with_log: bool = False):
+        super().__init__(capacity=capacity, with_log=with_log)  # Inicializa o construtor da classe base
         self.symbol = symbol
         self.timeframe = timeframe
         self.timeframe_in_seconds = utl.period_seconds(self.timeframe)

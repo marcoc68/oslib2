@@ -3,14 +3,18 @@ import numpy as np
 
 class Window:
     """Buffer circular genérico reutilizável, construído nativamente com collections.deque."""
-    def __init__(self, capacity: int = 10):
+    def __init__(self, capacity: int = 10, with_log: bool = False):
         self.capacity = capacity if capacity > 0 else 10
+        self.with_log = with_log
         # O deque com maxlen descarta automaticamente o elemento mais antigo ao estourar a capacidade
         self.buffer = deque(maxlen=self.capacity)
 
     def add(self, value: float):
         """Adiciona um novo elemento ao final do buffer. Se estiver cheio, o mais antigo é descartado."""
-        self.buffer.append(value)
+        if self.with_log:
+            self.buffer.append(np.log(value))
+        else:
+            self.buffer.append(value)
 
     def set(self, ind: int, value: float):
         """Atualiza o valor do elemento em ind."""
