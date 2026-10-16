@@ -1,5 +1,6 @@
 import MetaTrader5 as mt5
-import oslib2.data.window_asset as win
+import oslib2.data.window_asset as wda
+import oslib2.data.window as wd
 import numpy as np
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import coint
@@ -9,8 +10,9 @@ class Pair:
     Dados estatisticos para PairTrading
     """
     def __init__(self, asset1: str, asset2: str, timeframe: int = mt5.TIMEFRAME_M1, win_len: int = 10):
-        self.win_asset1 = win.WindowAsset(asset1, timeframe, win_len, with_log=True)
-        self.win_asset2 = win.WindowAsset(asset2, timeframe, win_len, with_log=True)
+        self.win_asset1 = wda.WindowAsset(asset1, timeframe, win_len, with_log=True)
+        self.win_asset2 = wda.WindowAsset(asset2, timeframe, win_len, with_log=True)
+        self.win_spread_std = wd.Window(capacity=win_len) # media do desvio padrao do spread
         self.timeframe = timeframe
 
         self.coef_correlacao = 0.0
@@ -67,6 +69,7 @@ class Pair:
         spread = p1 - (self.beta * p2 + self.intercept)
         self.spread_med = np.mean(spread)
         self.spread_std = np.std(spread, ddof=1)
+        self.win_spread_std.add(self.spread_std)
 
         # Spread atual (último elemento)
         spread_atual = spread[-1]
